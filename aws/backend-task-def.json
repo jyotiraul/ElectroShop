@@ -8,8 +8,7 @@
   "containerDefinitions": [
     {
       "name": "backend",
-      "image": "REPLACEME",  // This will be replaced by the GitHub Action
-      "essential": true,
+      "image": "REPLACEME",
       "cpu": 0,
       "portMappings": [
         {
