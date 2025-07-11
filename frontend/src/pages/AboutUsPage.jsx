@@ -20,6 +20,7 @@ const AboutUsPage = () => {
         </Typography>
         <Typography variant="body1" paragraph>
           Thank you for choosing ElectroShop. We look forward to serving you and helping you find the perfect gadget to fit your lifestyle.
+          Thank you so much !!!
         </Typography>
       </Paper>
     </Container>
