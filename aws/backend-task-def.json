@@ -1,0 +1,40 @@
+{
+  "family": "backend",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "arn:aws:iam::448704111492:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "backend",
+      "image": "REPLACEME",  // This will be replaced by the GitHub Action
+      "essential": true,
+      "cpu": 0,
+      "portMappings": [
+        {
+          "name": "backend-5000-tcp",
+          "containerPort": 5000,
+          "hostPort": 5000,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        }
+      ],
+      "environment": [
+        {
+          "name": "MONGO_URI",
+          "value": "mongodb+srv://Jyotiraul74:Jyoti%401994@databasecluster.ixtjrot.mongodb.net/electroshop?ssl=true&authSource=admin&retryWrites=true&w=majority"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/backend",
+          "awslogs-create-group": "true",
+          "awslogs-region": "ap-south-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}

@@ -10,6 +10,11 @@ jobs:
     name: Build and Deploy Both Services
     runs-on: ubuntu-latest
 
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      ECR_REPO_BACKEND: ${{ secrets.ECR_REPOSITORY_BACKEND }}
+      ECR_REPO_FRONTEND: ${{ secrets.ECR_REPOSITORY_FRONTEND }}
+
     steps:
       - name: Checkout Source
         uses: actions/checkout@v3
@@ -19,7 +24,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
@@ -30,31 +35,40 @@ jobs:
           docker build -t $ECR_REPO_BACKEND ./backend
           docker tag $ECR_REPO_BACKEND $ECR_REPO_BACKEND:latest
           docker push $ECR_REPO_BACKEND:latest
-        env:
-          ECR_REPO_BACKEND: ${{ secrets.ECR_REPOSITORY_BACKEND }}
+
+      - name: Render Backend Task Definition
+        id: render-backend
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: aws/backend-task-def.json
+          container-name: backend
+          image: ${{ env.ECR_REPO_BACKEND }}:latest
 
       - name: Deploy Backend to ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           service: ${{ secrets.ECS_SERVICE_BACKEND }}
           cluster: ${{ secrets.ECS_CLUSTER_NAME }}
-          image: ${{ secrets.ECR_REPOSITORY_BACKEND }}:latest
-          task-definition: ${{ secrets.ECS_TASK_DEFINITION_BACKEND }}
+          task-definition: ${{ steps.render-backend.outputs.task-definition }}
 
       # Build & Push Frontend
-      
       - name: Build and Push Frontend Image
         run: |
           docker build -t $ECR_REPO_FRONTEND ./frontend
           docker tag $ECR_REPO_FRONTEND $ECR_REPO_FRONTEND:latest
           docker push $ECR_REPO_FRONTEND:latest
-        env:
-          ECR_REPO_FRONTEND: ${{ secrets.ECR_REPOSITORY_FRONTEND }}
+
+      - name: Render Frontend Task Definition
+        id: render-frontend
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: aws/frontend-task-def.json
+          container-name: frontend
+          image: ${{ env.ECR_REPO_FRONTEND }}:latest
 
       - name: Deploy Frontend to ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           service: ${{ secrets.ECS_SERVICE_FRONTEND }}
           cluster: ${{ secrets.ECS_CLUSTER_NAME }}
-          image: ${{ secrets.ECR_REPOSITORY_FRONTEND }}:latest
-          task-definition: ${{ secrets.ECS_TASK_DEFINITION_FRONTEND }}
+          task-definition: ${{ steps.render-frontend.outputs.task-definition }}
