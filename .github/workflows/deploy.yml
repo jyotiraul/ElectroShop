@@ -1,0 +1,60 @@
+name: Deploy Frontend & Backend to ECS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Build and Deploy Both Services
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # Build & Push Backend
+      - name: Build and Push Backend Image
+        run: |
+          docker build -t $ECR_REPO_BACKEND ./backend
+          docker tag $ECR_REPO_BACKEND $ECR_REPO_BACKEND:latest
+          docker push $ECR_REPO_BACKEND:latest
+        env:
+          ECR_REPO_BACKEND: ${{ secrets.ECR_REPOSITORY_BACKEND }}
+
+      - name: Deploy Backend to ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          service: ${{ secrets.ECS_SERVICE_BACKEND }}
+          cluster: ${{ secrets.ECS_CLUSTER_NAME }}
+          image: ${{ secrets.ECR_REPOSITORY_BACKEND }}:latest
+          task-definition: ${{ secrets.ECS_TASK_DEFINITION_BACKEND }}
+
+      # Build & Push Frontend
+      
+      - name: Build and Push Frontend Image
+        run: |
+          docker build -t $ECR_REPO_FRONTEND ./frontend
+          docker tag $ECR_REPO_FRONTEND $ECR_REPO_FRONTEND:latest
+          docker push $ECR_REPO_FRONTEND:latest
+        env:
+          ECR_REPO_FRONTEND: ${{ secrets.ECR_REPOSITORY_FRONTEND }}
+
+      - name: Deploy Frontend to ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          service: ${{ secrets.ECS_SERVICE_FRONTEND }}
+          cluster: ${{ secrets.ECS_CLUSTER_NAME }}
+          image: ${{ secrets.ECR_REPOSITORY_FRONTEND }}:latest
+          task-definition: ${{ secrets.ECS_TASK_DEFINITION_FRONTEND }}
