@@ -1,6 +1,12 @@
-ElectroShop
+   ElectroShop – End-to-End Cloud-Native E-Commerce Platform 
+___________________________________________________________________________________
+ElectroShop is a modern e-commerce application with full CI/CD automation, secure deployment on AWS, containerized microservices architecture, centralized logging, monitoring, and robust cloud infrastructure.
 
-Project Setup and Containerisation
+---
+
+### Phase 1. Containerisation and AWS Deployment. 
+
+1. Project Setup and Containerisation
 
 Backend-
 
@@ -33,6 +39,8 @@ Validation-
 Application successfully running on
 
 Check database—
+
+---
 
 Week 2— Aws infrastructure and provisioning
 
@@ -115,6 +123,8 @@ Security group name: electroshop-ecs-sg
 Description: Allow traffic from ALB to ECS tasks
 
 **VPC: Same as above (electroshop-vpc)**
+
+---
 
 Week 3 : Manual Deployment to AWS-
 
@@ -279,13 +289,19 @@ Leave all other settings as-is → Update service
 
 Validate
 
-Phase 2-  CI/CD, monitoring & security
+---
 
-CI/CD Pipeline automation
+###Phase 2-  CI/CD, monitoring & security
+
+---
+
+week 4 -CI/CD Pipeline automation
 
 Added Thank you so much !!! in aboutUsPage.jsx
 
 Changes reflect automatically.
+
+---
 
 Week 5- Monitoring and logging
 
@@ -312,6 +328,8 @@ Add your email as subscription and confirm it.
 Cloudwatch -> alarm -> create alaram ->
 
 For cpu utilization—backend frontend
+
+---
 
 Week 6. Security hardening and final review
 
@@ -345,3 +363,4 @@ Security is applied. It will gives error. Site is not secured.
 
 So I disassociate aws resource to continue website.
 
+---
