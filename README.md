@@ -104,7 +104,7 @@ Security group name: electroshop-alb-sg
 
 Description: Allow inbound HTTP/HTTPS for ALB
 
-VPC: Select your electroshop-vpc
+**VPC: Select your electroshop-vpc**
 
 Outbound Rules:  Default is All traffic (Anywhere) — keep as is. Click Create security group
 
@@ -114,15 +114,19 @@ Security group name: electroshop-ecs-sg
 
 Description: Allow traffic from ALB to ECS tasks
 
-VPC: Same as above (electroshop-vpc)
+**VPC: Same as above (electroshop-vpc)**
 
 Week 3 : Manual Deployment to AWS-
 
+```bash
 aws configure
+```
 
 Push container image
 
+```bash
 aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin <your-account-id>.dkr.ecr.ap-south-1.amazonaws.com
+```
 
 Replace <your-account-id> with your actual AWS account ID.
 
@@ -132,23 +136,39 @@ Before build and push image to ecr just change below line-
 
 Frontend :
 
+```bash
 npm run build
+```
 
+```bash
 ls build/index.html
+```
 
+```bash
 docker build -t electroshop-frontend .
+```
 
+```bash
 docker tag electroshop-frontend:latest 448704111492.dkr.ecr.ap-south-1.amazonaws.com/electroshop/frontend
+```
 
+```bash
 docker push 448704111492.dkr.ecr.ap-south-1.amazonaws.com/electroshop/frontend
+```
 
 Backend :
 
+```bash
 docker build -t electroshop-backend .
+```
 
+```bash
 docker tag electroshop-backend:latest 448704111492.dkr.ecr.ap-south-1.amazonaws.com/electroshop/backend
+```
 
+```bash
 docker push 448704111492.dkr.ecr.ap-south-1.amazonaws.com/electroshop/backend
+```
 
 Connection for database:
 
@@ -225,7 +245,7 @@ Number of tasks: 1 or 2
 
 Load Balancer: Yes
 
-ALB: select your ALB
+**ALB: select your ALB**
 
 Listener: HTTP 80
 
@@ -325,46 +345,3 @@ Security is applied. It will gives error. Site is not secured.
 
 So I disassociate aws resource to continue website.
 
-# Detailed Project Enhancements
-
-## Phase 1: Project Setup and Containerisation
-
-In this phase, the application was set up locally and containerized using Docker for portability. MongoDB was installed and used for database storage. Dockerfiles and docker-compose configurations were created for frontend and backend orchestration.
-
-## Phase 2: AWS Infrastructure and Provisioning
-
-AWS services such as VPC, NAT Gateway, IAM, ECR, ECS, and security groups were configured. The infrastructure supported secure and scalable deployment using ECS Fargate and private/public subnets.
-
-## Phase 3: Manual Deployment to AWS
-
-Application containers were pushed to ECR and deployed using ECS Task Definitions and Fargate Services. MongoDB Atlas was used for managed cloud database hosting. ALB was configured for traffic routing and domain-level access.
-
-## Phase 4: CI/CD Automation
-
-GitHub Actions was integrated for automatic build and deployment. Any committed changes were deployed to AWS ECS automatically without manual steps.
-
-## Phase 5: Monitoring and Logging
-
-AWS CloudWatch was configured to collect and visualize application logs and metrics. Dashboards and alarms were created for ECS service monitoring and alerts were sent using SNS.
-
-## Phase 6: Security Hardening
-
-Application secrets such as Mongo_URI and JWT Secret were moved to AWS Secrets Manager. Trivy was added to GitHub workflows for vulnerability scanning. AWS WAF and Shield provided network protection.
-
-## System Architecture Overview
-
-The system uses a microservices architecture with React (frontend), Node.js/Express (backend), and MongoDB Atlas (database). Docker containers are deployed on AWS ECS using Fargate. Application traffic is routed via an ALB. CI/CD and monitoring are handled through GitHub Actions and CloudWatch respectively.
-
-## Challenges Faced
-
-- Configuring VPC routing and NAT Gateway correctly.
-- Securing secrets during deployment.
-- Debugging ECS task definition and service failures.
-- Setting up proper CloudWatch alarms and logs.
-
-## Key Achievements
-
-- Complete CI/CD pipeline integration with security checks.
-- Fully containerized and cloud-deployed infrastructure.
-- Real-time monitoring and alerting setup.
-- Secrets management and hardened cloud deployment.
