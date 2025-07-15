@@ -22,7 +22,7 @@ const AboutUsPage = () => {
           Thank you for choosing ElectroShop. We look forward to serving you and helping you find the perfect gadget to fit your lifestyle.
         </Typography>
         <Typography variant="body1" paragraph>
-          Thank you so Much for choosing ElectroShop.
+          Thank you for choosing ElectroShop.- Sparknet innovation
         </Typography>
       </Paper>
     </Container>

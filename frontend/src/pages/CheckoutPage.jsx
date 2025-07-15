@@ -39,7 +39,7 @@ const CheckoutPage = () => {
             total
         };
         try {
-            const res = await fetch('http://electroshop-alb-1048038344.ap-south-1.elb.amazonaws.com/api/orders', {
+            const res = await fetch('http://electroshop-alb-1513702881.ap-south-1.elb.amazonaws.com/api/orders', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderData)
